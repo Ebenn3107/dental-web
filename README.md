@@ -1,66 +1,83 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Klinik Gigi Sehat — Sistem Booking & Jadwal
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web booking klinik dokter gigi: pasien booking slot online, admin mengelola layanan, dokter, jadwal, cuti, dan booking lewat panel Filament.
 
-## About Laravel
+**Scope: booking & jadwal saja.** Tidak ada rekam medis (ditunda ke fase 2).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Halaman publik** (bahasa Indonesia, responsif):
+  - Beranda: hero + daftar layanan (durasi, harga) + daftar dokter
+  - Form booking dinamis (Livewire): layanan → dokter (sesuai layanan) → tanggal → slot tersedia → data diri
+  - Slot dihitung real-time: interval 15 menit, panjang sesuai durasi layanan, menghindari booking aktif, cuti dokter, dan jam yang sudah lewat
+  - Halaman sukses: kode booking unik (`KLG-YYMMDD-XXXX`) + tombol **Konfirmasi via WhatsApp** (pesan terisi otomatis)
+  - Cek status booking dengan kode + no. HP (no. HP dinormalisasi, jadi `0812…` dan `62812…` sama saja)
+- **Admin panel** (Filament 3, di `/admin`):
+  - CRUD Layanan & Dokter (jadwal praktik + cuti via relation manager di halaman dokter, pivot layanan yang dikuasai)
+  - Resource Booking: filter status/tanggal/dokter, aksi ubah status (Konfirmasi → Selesai / Batalkan / Tidak Hadir) sesuai transisi yang sah
+  - Widget dashboard: booking hari ini, menunggu konfirmasi, selesai hari ini
+- **Perlindungan double booking**: re-check ketersediaan di dalam `DB::transaction` + `lockForUpdate` (`BookingService`); dua submit paralel tidak bisa merebut slot yang sama. Test wajibnya ada.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Stack
 
-## Learning Laravel
+- Laravel 11 (PHP 8.4), Filament 3 + Livewire 3
+- Blade + Tailwind CSS (Vite) untuk halaman publik
+- SQLite (default dev) / MySQL (produksi) — timezone `Asia/Jakarta`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Tidak ada package di luar stack di atas.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Cara Menjalankan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Prasyarat: PHP >= 8.2 dengan ekstensi `pdo_sqlite`, Composer, Node.js >= 20.
 
-## Laravel Sponsors
+```bash
+# 1. Dependensi PHP
+composer install
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# 2. Konfigurasi
+cp .env.example .env
+php artisan key:generate
 
-### Premium Partners
+# 3. Database (SQLite — siap pakai)
+touch database/database.sqlite
+php artisan migrate --seed
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+#    Untuk MySQL: ubah DB_CONNECTION=mysql + kredensial di .env,
+#    lalu php artisan migrate --seed (tanpa touch database.sqlite)
 
-## Contributing
+# 4. Dependensi + build frontend
+npm install
+npm run build
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 5. Jalankan
+php artisan serve
+```
 
-## Code of Conduct
+- Publik: <http://127.0.0.1:8000>
+- Admin: <http://127.0.0.1:8000/admin> — login `admin@klinik.test` / `password` (**segera ganti** untuk lingkungan nyata)
+- Nomor WhatsApp klinik: set `CLINIC_WHATSAPP_NUMBER=62xxxxxxxxxx` di `.env` (default dummy `6281234567890`)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Seeder mengisi 3 dokter, 5 layanan, dan jadwal Senin–Jumat 09:00–16:00 serta Sabtu 09:00–13:00.
 
-## Security Vulnerabilities
+## Menjalankan Test
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan test
+```
 
-## License
+Menggunakan SQLite in-memory (tidak mengganggu database dev). Cakupan antara lain:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- `AvailabilityServiceTest` — slot sesuai jadwal, cuti, hari tanpa jadwal, tanggal lampau, slot hari ini hanya mendatang, durasi layanan berbeda → slot berbeda, overlap booking aktif vs cancelled
+- `BookingServiceTest` — kode/end_time/status benar, **double booking ditolak**, slot berdempetan (09:00–10:00 lalu 10:00–11:00) diizinkan, slot dokter lain tidak terblokir, slot lampau ditolak
+- `PublicPagesTest` / `CheckStatusTest` / `AdminPanelTest` / `AdminBookingTest` — alur booking publik, validasi no. HP Indonesia, cek status (termasuk format HP berbeda), panel admin & aksi status
+
+## Catatan Teknis
+
+- **Composer security advisories**: Composer 2.10 memblokir instalasi paket dengan advisory (`policy.advisories.block`). Project ini mewajibkan Laravel 11 (spec), yang berstatus advisory (terutama di debug mode), jadi repositori ini set `composer config policy.advisories.block false` secara lokal. Jalankan `composer audit` untuk melihat detailnya, dan pertimbangkan upgrade ke Laravel 12 saat memungkinkan.
+- **Logika slot** terpusat di `App\Services\AvailabilityService`; pembuatan booking di `App\Services\BookingService` (transaction + lock). Controller/view tidak memuat logika berat.
+- **No. HP** disimpan kanonik `62…` (`App\Support\Phone`); semua pencocokan (cek status) memakai bentuk kanonik.
+- Validasi memakai aturan di Livewire component / FormRequest; pesan validasi bahasa Indonesia di `lang/id/validation.php`.
+
+## Out of Scope (Fase 2)
+
+Reminder WhatsApp otomatis (n8n), pembayaran/DP, rekam medis, multi-cabang.
