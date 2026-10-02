@@ -46,4 +46,24 @@ class Booking extends Model
     {
         return $query->where('status', '!=', BookingStatus::Cancelled->value);
     }
+
+    /**
+     * Link WhatsApp untuk mengonfirmasi booking ke admin klinik.
+     */
+    public function waLink(): string
+    {
+        $message = sprintf(
+            'Halo %s, saya %s. Saya sudah booking %s dengan %s pada %s pukul %s-%s WIB. Kode booking: %s. Terima kasih.',
+            config('clinic.name'),
+            $this->patient_name,
+            $this->service->name,
+            $this->doctor->name,
+            $this->booking_date->translatedFormat('d/m/Y'),
+            \Carbon\Carbon::parse($this->start_time)->format('H.i'),
+            \Carbon\Carbon::parse($this->end_time)->format('H.i'),
+            $this->code,
+        );
+
+        return 'https://wa.me/'.config('clinic.whatsapp_number').'?text='.rawurlencode($message);
+    }
 }

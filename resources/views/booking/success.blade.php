@@ -54,6 +54,10 @@
         </div>
 
         <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a href="{{ $booking->waLink() }}" target="_blank" rel="noopener"
+               class="w-full rounded-full bg-green-600 px-6 py-3 font-semibold text-white shadow-md transition hover:bg-green-700 sm:w-auto">
+                Konfirmasi via WhatsApp
+            </a>
             <a href="{{ route('booking') }}"
                class="w-full rounded-full bg-teal-600 px-6 py-3 font-semibold text-white shadow-md transition hover:bg-teal-700 sm:w-auto">
                 Booking Lagi

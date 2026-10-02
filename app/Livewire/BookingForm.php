@@ -110,6 +110,9 @@ class BookingForm extends Component
 
     public function submit()
     {
+        // Buang spasi/tanda hubung agar nomor dengan format longgar tetap lolos
+        $this->phone = preg_replace('/[^\d+]/', '', $this->phone);
+
         $this->validate();
 
         if (! $this->slots->contains(fn (array $s) => $s['start'] === $this->slot)) {
