@@ -1,3 +1,80 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Hallmark · genre: playful · macrostructure: Marquee Hero · H6 hero knobs: overlay=left-bias, proof-card=floating, CTAs=dual-pill
+ * theme: studied-DNA (source: image) · paper oklch(99% 0.004 260) · accent oklch(55% 0.2 262) flood
+ * display: soft geometric sans (Satoshi 700) · body: neutral grotesque (Switzer) · outlier: Geist Mono (kode booking, angka statistik)
+ * nav: N1 minimal + pill CTA · footer: Ft5 statement (navy watermark) · studied: yes · DNA-source: image (user reference)
+ */
+:root {
+    --color-paper: oklch(99% 0.004 260);
+    --color-mist: oklch(96.2% 0.008 260);
+    --color-rule: oklch(89.5% 0.012 260);
+    --color-ink: oklch(23% 0.03 262);
+    --color-ink-soft: oklch(47% 0.02 262);
+    --color-accent: oklch(55% 0.2 262);
+    --color-accent-deep: oklch(44% 0.17 262);
+    --color-navy: oklch(23% 0.05 262);
+    --color-navy-2: oklch(29% 0.045 262);
+    --color-on-navy: oklch(93% 0.012 262);
+    --color-wa: oklch(50% 0.14 152);
+    --color-danger: oklch(55% 0.21 27);
+    --color-danger-soft: oklch(93% 0.045 27);
+
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-fast: 140ms;
+    --dur-med: 260ms;
+}
+
+html {
+    overflow-x: clip;
+    scroll-behavior: smooth;
+}
+
+body {
+    overflow-x: clip;
+    font-family: Switzer, ui-sans-serif, system-ui, sans-serif;
+    text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, .font-display {
+    font-family: Satoshi, ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.025em;
+}
+
+/* Fokus muncul instan — tidak dianimasasi */
+:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* Kartu terangkat lembut (genre playful: hover-lift) */
+.lift {
+    transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px -14px oklch(20% 0.02 262 / 0.4);
+}
+
+/* Marquee layanan — satu-satunya loop; berhenti total saat reduced motion */
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 36s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .marquee-track { animation: none; }
+    .lift, .lift:hover { transition: none; transform: none; }
+}
+
+/* Angka kolom data */
+.tabular {
+    font-variant-numeric: tabular-nums;
+}

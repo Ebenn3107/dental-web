@@ -1,75 +1,162 @@
 @extends('layouts.public')
 
-@section('title', 'Beranda — Klinik Gigi Sehat')
+@section('title', 'Klinik Gigi Sehat — Booking tanpa antre')
 
 @section('content')
-    <section class="rounded-3xl bg-gradient-to-br from-teal-600 to-teal-800 px-6 py-14 text-center text-white shadow-lg sm:px-12">
-        <h1 class="mx-auto max-w-2xl text-3xl font-bold leading-tight sm:text-4xl">
-            Senyum Sehat Dimulai dari Slot yang Tepat
-        </h1>
-        <p class="mx-auto mt-4 max-w-xl text-teal-100">
-            Pilih layanan, dokter, dan jam praktik favoritmu. Booking online tanpa antre —
-            cukup beberapa klik.
-        </p>
-        <a href="{{ route('booking') }}"
-           class="mt-8 inline-block rounded-full bg-white px-8 py-3 text-base font-semibold text-teal-700 shadow-md transition hover:bg-teal-50">
-            Booking Sekarang
-        </a>
-    </section>
-
-    <section class="mt-12">
-        <div class="flex items-end justify-between">
-            <h2 class="text-2xl font-bold text-slate-900">Layanan Kami</h2>
-            <span class="text-sm text-slate-500">{{ $services->count() }} layanan aktif</span>
-        </div>
-        <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            @forelse ($services as $service)
-                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-300 hover:shadow-md">
-                    <h3 class="font-semibold text-slate-900">{{ $service->name }}</h3>
-                    <p class="mt-1 text-sm text-slate-500">⏱ {{ $service->duration_minutes }} menit</p>
-                    <p class="mt-3 font-bold text-teal-700">
-                        {{ $service->price ? 'Rp '.number_format((float) $service->price, 0, ',', '.') : 'Hubungi kami' }}
-                    </p>
+    {{-- Hero: panel navy dengan kartu contoh booking mengambang --}}
+    <section class="relative mt-6 overflow-hidden rounded-3xl bg-navy px-6 py-14 text-on-navy sm:px-10 sm:py-20 lg:px-16">
+        <div class="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-accent/30 blur-3xl" aria-hidden="true"></div>
+        <div class="relative grid items-center gap-12 lg:grid-cols-12">
+            <div class="lg:col-span-7">
+                <h1 class="font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+                    Booking dokter gigi,
+                    <span class="text-accent">tanpa antre.</span>
+                </h1>
+                <p class="mt-5 max-w-lg text-base leading-relaxed text-on-navy/75 sm:text-lg">
+                    Pilih layanan, dokter, dan jam praktik yang cocok — slot real-time,
+                    konfirmasi lewat WhatsApp, datang tepat jadwal.
+                </p>
+                <div class="mt-8 flex flex-wrap items-center gap-3">
+                    <a href="{{ route('booking') }}"
+                       class="whitespace-nowrap rounded-full bg-accent px-7 py-3.5 font-medium text-white transition-colors hover:bg-accent-deep">
+                        Booking Sekarang
+                    </a>
+                    <a href="{{ route('check-status') }}"
+                       class="whitespace-nowrap rounded-full border border-on-navy/30 px-7 py-3.5 font-medium text-on-navy transition-colors hover:border-on-navy/60">
+                        Cek Status Booking
+                    </a>
                 </div>
-            @empty
-                <p class="text-slate-500">Belum ada layanan yang tersedia.</p>
-            @endforelse
+            </div>
+
+            {{-- Kartu contoh: menunjukkan alur produk, bukan dekorasi --}}
+            <div class="lg:col-span-5">
+                <div class="ml-auto max-w-sm rounded-2xl bg-paper p-6 text-ink">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-medium uppercase tracking-widest text-ink-soft">Contoh booking</p>
+                        <span class="rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent-deep">Dikonfirmasi</span>
+                    </div>
+                    <p class="mt-4 font-display text-xl font-bold tracking-tight">Scaling (Pembersihan Karang Gigi)</p>
+                    <dl class="mt-4 space-y-2 text-sm">
+                        <div class="flex justify-between gap-4 border-b border-rule pb-2">
+                            <dt class="text-ink-soft">Dokter</dt>
+                            <dd class="font-medium">drg. Sari Wulandari</dd>
+                        </div>
+                        <div class="flex justify-between gap-4 border-b border-rule pb-2">
+                            <dt class="text-ink-soft">Jadwal</dt>
+                            <dd class="font-medium tabular">Senin, 09.00–09.45 WIB</dd>
+                        </div>
+                        <div class="flex justify-between gap-4">
+                            <dt class="text-ink-soft">Kode</dt>
+                            <dd class="font-mono text-sm">KLG-261002-A84B</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="mt-12">
-        <div class="flex items-end justify-between">
-            <h2 class="text-2xl font-bold text-slate-900">Dokter Gigi Kami</h2>
-            <span class="text-sm text-slate-500">{{ $doctors->count() }} dokter aktif</span>
+    {{-- Bento statistik — semua angka nyata dari sistem --}}
+    <section class="mt-14">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-12">
+            <div class="lift rounded-2xl border border-rule bg-paper p-6 lg:col-span-4">
+                <p class="font-mono text-4xl font-medium text-accent tabular">{{ str_pad($doctors->count(), 2, '0', STR_PAD_LEFT) }}</p>
+                <p class="mt-2 font-display font-bold text-ink">Dokter gigi aktif</p>
+                <p class="mt-1 text-sm text-ink-soft">Praktik rutin setiap minggu</p>
+            </div>
+            <div class="lift rounded-2xl border border-rule bg-paper p-6 lg:col-span-3">
+                <p class="font-mono text-4xl font-medium text-accent tabular">{{ str_pad($services->count(), 2, '0', STR_PAD_LEFT) }}</p>
+                <p class="mt-2 font-display font-bold text-ink">Layanan tersedia</p>
+                <p class="mt-1 text-sm text-ink-soft">Dari pemeriksaan hingga bleaching</p>
+            </div>
+            <div class="lift rounded-2xl border border-rule bg-paper p-6 lg:col-span-2">
+                <p class="font-mono text-4xl font-medium text-accent tabular">{{ $practiceDays }}</p>
+                <p class="mt-2 font-display font-bold text-ink">Hari praktik</p>
+                <p class="mt-1 text-sm text-ink-soft">Per minggu</p>
+            </div>
+            <div class="lift rounded-2xl bg-accent p-6 text-white lg:col-span-3">
+                <p class="font-mono text-4xl font-medium tabular">{{ $slotInterval }}<span class="text-lg">min</span></p>
+                <p class="mt-2 font-display font-bold">Per slot waktu</p>
+                <p class="mt-1 text-sm text-white/80">Interval slot yang rapi dan real-time</p>
+            </div>
         </div>
-        <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            @forelse ($doctors as $doctor)
-                <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-300 hover:shadow-md">
-                    @if ($doctor->photo)
-                        <img src="{{ Storage::url($doctor->photo) }}" alt="{{ $doctor->name }}"
-                             class="h-14 w-14 rounded-full object-cover">
+    </section>
+
+    {{-- Marquee layanan — nama layanan asli, loop pelan --}}
+    <section class="mt-14 overflow-hidden rounded-2xl border-y border-rule bg-mist px-4 py-4 sm:px-6" aria-label="Daftar layanan">
+        <div class="marquee-track gap-8">
+            @foreach (array_merge($services->all(), $services->all()) as $layanan)
+                <span class="flex items-center gap-8 whitespace-nowrap font-display text-lg font-medium text-ink">
+                    {{ $layanan->name }} <span class="font-mono text-sm text-accent" aria-hidden="true">+</span>
+                </span>
+            @endforeach
+        </div>
+    </section>
+
+    {{-- Layanan bernomor — grid asimetris --}}
+    <section class="mt-20">
+        <h2 class="max-w-md font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+            Layanan perawatan yang tersedia
+        </h2>
+        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+            @foreach ($services as $index => $layanan)
+                <article class="lift rounded-2xl border border-rule p-6 {{ $loop->first ? 'bg-accent text-white lg:col-span-4' : 'bg-paper lg:col-span-2' }}
+                               {{ $index === 3 ? 'lg:col-span-2' : '' }} {{ $index === 4 ? 'lg:col-span-4' : '' }}">
+                    <p class="font-mono text-sm {{ $loop->first ? 'text-white/70' : 'text-accent' }}">0{{ $index + 1 }}</p>
+                    <h3 class="mt-6 font-display text-xl font-bold tracking-tight {{ $loop->first ? 'text-white' : 'text-ink' }}">
+                        {{ $layanan->name }}
+                    </h3>
+                    <p class="mt-2 text-sm {{ $loop->first ? 'text-white/80' : 'text-ink-soft' }}">
+                        {{ $layanan->duration_minutes }} menit ·
+                        {{ $layanan->price ? 'Rp '.number_format((float) $layanan->price, 0, ',', '.') : 'Hubungi kami' }}
+                    </p>
+                </article>
+            @endforeach
+        </div>
+    </section>
+
+    {{-- Dokter --}}
+    <section class="mt-20">
+        <h2 class="max-w-md font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+            Dokter gigi kami
+        </h2>
+        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            @forelse ($doctors as $dokter)
+                <article class="lift flex items-center gap-4 rounded-2xl border border-rule bg-paper p-6">
+                    @if ($dokter->photo)
+                        <img src="{{ Storage::url($dokter->photo) }}" alt="{{ $dokter->name }}"
+                             class="h-14 w-14 shrink-0 rounded-full object-cover">
                     @else
-                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-teal-100 text-lg font-bold text-teal-700">
-                            {{ \Illuminate\Support\Str::of($doctor->name)->replace(['drg. ', 'dr. '], '')->explode(' ')->map(fn ($w) => \Illuminate\Support\Str::charAt($w, 0))->implode('') }}
-                        </div>
+                        <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent/10 font-display text-lg font-bold text-accent-deep">
+                            {{ \Illuminate\Support\Str::of($dokter->name)->replace(['drg. ', 'dr. '], '')->explode(' ')->map(fn ($w) => \Illuminate\Support\Str::charAt($w, 0))->implode('') }}
+                        </span>
                     @endif
                     <div>
-                        <h3 class="font-semibold text-slate-900">{{ $doctor->name }}</h3>
-                        <p class="text-sm text-slate-500">{{ $doctor->specialization }}</p>
+                        <h3 class="font-display text-lg font-bold tracking-tight text-ink">{{ $dokter->name }}</h3>
+                        <p class="text-sm text-ink-soft">{{ $dokter->specialization }}</p>
                     </div>
-                </div>
+                </article>
             @empty
-                <p class="text-slate-500">Belum ada dokter yang tersedia.</p>
+                <p class="text-ink-soft">Belum ada dokter yang tersedia.</p>
             @endforelse
+            <article class="flex flex-col justify-center rounded-2xl bg-mist p-6 sm:col-span-2 lg:col-span-3">
+                <p class="font-display text-lg font-bold tracking-tight text-ink">Jadwal praktik seragam</p>
+                <p class="mt-1 text-sm text-ink-soft">
+                    Senin–Jumat 09.00–16.00 · Sabtu 09.00–13.00 — slot real-time mengikuti cuti dan booking yang sudah ada.
+                </p>
+            </article>
         </div>
     </section>
 
-    <section class="mt-12 rounded-2xl border border-teal-200 bg-teal-50 p-8 text-center">
-        <h2 class="text-xl font-bold text-slate-900">Sudah punya kode booking?</h2>
-        <p class="mt-1 text-slate-600">Cek status kunjunganmu kapan saja.</p>
-        <a href="{{ route('check-status') }}"
-           class="mt-4 inline-block rounded-full border border-teal-600 px-6 py-2 font-semibold text-teal-700 transition hover:bg-teal-600 hover:text-white">
-            Cek Status Booking
-        </a>
+    {{-- CTA band navy --}}
+    <section class="mt-20 rounded-3xl bg-navy px-6 py-12 text-on-navy sm:px-12">
+        <div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+            <h2 class="max-w-md font-display text-3xl font-bold tracking-tight">
+                Siap datang tepat jadwal?
+            </h2>
+            <a href="{{ route('booking') }}"
+               class="whitespace-nowrap rounded-full bg-white px-7 py-3.5 font-medium text-navy transition-colors hover:bg-mist">
+                Mulai Booking
+            </a>
+        </div>
     </section>
 @endsection
