@@ -49,7 +49,9 @@ class AvailabilityService
         $isToday = $date->isToday();
         $nowMinutes = (int) now()->format('H') * 60 + (int) now()->format('i');
 
-        $slots = [];
+        // Keyed by jam mulai: baris jadwal yang tumpang tindih tidak
+        // menghasilkan slot duplikat, dan hasilnya tetap terurut naik.
+        $byStart = [];
 
         foreach ($schedules as $schedule) {
             $open = self::toMinutes((string) $schedule->start_time);
@@ -68,14 +70,16 @@ class AvailabilityService
                     }
                 }
 
-                $slots[] = [
+                $byStart[$start] = [
                     'start' => self::toClock($start),
                     'end' => self::toClock($end),
                 ];
             }
         }
 
-        return $slots;
+        ksort($byStart);
+
+        return array_values($byStart);
     }
 
     public static function toMinutes(string $time): int

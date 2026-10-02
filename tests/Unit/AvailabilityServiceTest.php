@@ -17,7 +17,7 @@ class AvailabilityServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    private AvailabilityService $availability;
+    protected AvailabilityService $availability;
 
     protected function setUp(): void
     {
@@ -26,7 +26,7 @@ class AvailabilityServiceTest extends TestCase
         $this->availability = new AvailabilityService();
     }
 
-    private function buatDokterDenganJadwal(int $dayOfWeek, string $start = '09:00', string $end = '17:00'): Doctor
+    protected function buatDokterDenganJadwal(int $dayOfWeek, string $start = '09:00', string $end = '17:00'): Doctor
     {
         $doctor = Doctor::factory()->create();
 
@@ -40,12 +40,12 @@ class AvailabilityServiceTest extends TestCase
         return $doctor;
     }
 
-    private function layanan(int $durasi = 30): Service
+    protected function layanan(int $durasi = 30): Service
     {
         return Service::factory()->create(['duration_minutes' => $durasi]);
     }
 
-    private function tanggalSeninDepan(): CarbonImmutable
+    protected function tanggalSeninDepan(): CarbonImmutable
     {
         return CarbonImmutable::parse('next monday');
     }

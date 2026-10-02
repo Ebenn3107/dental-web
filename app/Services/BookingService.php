@@ -48,7 +48,7 @@ class BookingService
             }
 
             return Booking::create([
-                'code' => $this->generateCode($date),
+                'code' => self::generateCode($date),
                 'patient_name' => $data['patient_name'],
                 'patient_phone' => Phone::normalize($data['patient_phone']),
                 'doctor_id' => $doctor->id,
@@ -62,7 +62,10 @@ class BookingService
         });
     }
 
-    private function generateCode(CarbonImmutable $date): string
+    /**
+     * Kode unik KLG-YYMMDD-XXXX; dipakai juga saat admin membuat booking manual.
+     */
+    public static function generateCode(CarbonImmutable $date): string
     {
         for ($attempt = 0; $attempt < 5; $attempt++) {
             $code = 'KLG-'.$date->format('ymd').'-'.Str::upper(Str::random(4));
