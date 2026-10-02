@@ -49,12 +49,13 @@ php artisan migrate --seed
 npm install
 npm run build
 
-# 5. Jalankan
-php artisan serve
+# 5. Jalankan (port tetap project: 8003)
+composer serve
+#    atau manual: php artisan serve --port=8003
 ```
 
-- Publik: <http://127.0.0.1:8000>
-- Admin: <http://127.0.0.1:8000/admin> — login `admin@klinik.test` / `password` (**segera ganti** untuk lingkungan nyata)
+- Publik: <http://127.0.0.1:8003>
+- Admin: <http://127.0.0.1:8003/admin> — login `admin@klinik.test` / `password` (**segera ganti** untuk lingkungan nyata)
 - Nomor WhatsApp klinik: set `CLINIC_WHATSAPP_NUMBER=62xxxxxxxxxx` di `.env` (default dummy `6281234567890`)
 
 Seeder mengisi 3 dokter, 5 layanan, dan jadwal Senin–Jumat 09:00–16:00 serta Sabtu 09:00–13:00.
