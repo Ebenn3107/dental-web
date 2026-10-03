@@ -12,7 +12,8 @@ class HomeController extends Controller
     public function index()
     {
         return view('home', [
-            'services' => Service::active()->orderBy('name')->get(),
+            // Urut id = urutan seeder: Pemeriksaan jadi tile unggulan, bukan urut abjad
+            'services' => Service::active()->orderBy('id')->get(),
             'doctors' => Doctor::active()->orderBy('name')->get(),
             'practiceDays' => DoctorSchedule::query()->distinct()->count('day_of_week'),
             'slotInterval' => AvailabilityService::SLOT_INTERVAL_MINUTES,

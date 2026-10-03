@@ -98,13 +98,13 @@
             Layanan perawatan yang tersedia
         </h2>
         <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+            {{-- Span per baris selalu berjumlah 6: unggulan 4 + 2, lalu 2+2+2 --}}
             @foreach ($services as $index => $layanan)
                 @php $foto = config('clinic.images.services')[$layanan->name] ?? null; @endphp
-                <article class="lift overflow-hidden rounded-2xl border border-rule {{ $loop->first ? 'bg-accent text-white lg:col-span-4' : 'bg-paper lg:col-span-2' }}
-                               {{ $index === 3 ? 'lg:col-span-2' : '' }} {{ $index === 4 ? 'lg:col-span-4' : '' }}">
+                <article class="lift overflow-hidden rounded-2xl border border-rule {{ $loop->first ? 'bg-accent text-white lg:col-span-4' : 'bg-paper lg:col-span-2' }}">
                     @if ($foto)
                         <img src="{{ asset($foto) }}" alt="Layanan {{ $layanan->name }}" loading="lazy"
-                             class="h-44 w-full object-cover {{ $loop->first ? 'sm:h-56' : '' }}">
+                             class="h-44 w-full object-cover">
                     @endif
                     <div class="p-6">
                         <p class="font-mono text-sm {{ $loop->first ? 'text-white/70' : 'text-accent' }}">0{{ $index + 1 }}</p>
