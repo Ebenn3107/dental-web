@@ -82,7 +82,7 @@
     </section>
 
     {{-- Marquee layanan — nama layanan asli, loop pelan --}}
-    <section class="mt-14 overflow-hidden rounded-2xl border-y border-rule bg-mist px-4 py-4 sm:px-6" aria-label="Daftar layanan">
+    <section class="marquee-strip mt-14 overflow-hidden rounded-2xl border-y border-rule bg-mist px-4 py-4 sm:px-6" aria-label="Daftar layanan">
         <div class="marquee-track gap-8">
             @foreach (array_merge($services->all(), $services->all()) as $layanan)
                 <span class="flex items-center gap-8 whitespace-nowrap font-display text-lg font-medium text-ink">

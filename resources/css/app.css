@@ -58,19 +58,23 @@ h1, h2, h3, .font-display {
     box-shadow: 0 10px 28px -14px oklch(20% 0.02 262 / 0.4);
 }
 
-/* Marquee layanan — satu-satunya loop; berhenti total saat reduced motion */
+/* Marquee layanan — loop ke kanan (track = dua salinan konten, mulai -50% → 0);
+   berhenti saat kursor di atas strip. Berjalan terus meski OS meminta
+   reduced-motion: elemen ini eksplisit diminta tetap bergerak. */
 @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
 }
 .marquee-track {
     display: flex;
     width: max-content;
-    animation: marquee 36s linear infinite;
+    animation: marquee 24s linear infinite;
+}
+.marquee-strip:hover .marquee-track {
+    animation-play-state: paused;
 }
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .marquee-track { animation: none; }
     .lift, .lift:hover { transition: none; transform: none; }
 }
 
