@@ -21,9 +21,9 @@
                 Klinik<span class="text-accent">Gigi</span>Sehat
             </a>
             <nav class="flex items-center gap-2 text-sm font-medium sm:gap-6">
-                <a href="{{ route('home') }}" class="hidden px-1 text-ink-soft transition-colors hover:text-ink sm:block">Beranda</a>
-                <a href="{{ route('check-status') }}" class="hidden px-1 text-ink-soft transition-colors hover:text-ink sm:block">Cek Status</a>
-                <a href="{{ route('booking') }}"
+                <a href="{{ route('home') }}" wire:navigate class="hidden px-1 text-ink-soft transition-colors hover:text-ink sm:block">Beranda</a>
+                <a href="{{ route('check-status') }}" wire:navigate class="hidden px-1 text-ink-soft transition-colors hover:text-ink sm:block">Cek Status</a>
+                <a href="{{ route('booking') }}" wire:navigate
                    class="whitespace-nowrap rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-deep">
                     Booking
                 </a>
@@ -46,9 +46,9 @@
                     </p>
                 </div>
                 <nav class="flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium">
-                    <a href="{{ route('home') }}" class="text-on-navy/80 transition-colors hover:text-white">Beranda</a>
-                    <a href="{{ route('booking') }}" class="text-on-navy/80 transition-colors hover:text-white">Booking</a>
-                    <a href="{{ route('check-status') }}" class="text-on-navy/80 transition-colors hover:text-white">Cek Status</a>
+                    <a href="{{ route('home') }}" wire:navigate class="text-on-navy/80 transition-colors hover:text-white">Beranda</a>
+                    <a href="{{ route('booking') }}" wire:navigate class="text-on-navy/80 transition-colors hover:text-white">Booking</a>
+                    <a href="{{ route('check-status') }}" wire:navigate class="text-on-navy/80 transition-colors hover:text-white">Cek Status</a>
                 </nav>
             </div>
             <p class="select-none py-8 text-center font-display text-[18vw] font-bold leading-none tracking-tight text-on-navy/10 md:text-[9rem]"

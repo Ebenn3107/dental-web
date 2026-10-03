@@ -68,7 +68,7 @@
                class="w-full whitespace-nowrap rounded-full bg-wa px-7 py-3.5 font-medium text-white transition-opacity hover:opacity-90 sm:w-auto">
                 Konfirmasi via WhatsApp
             </a>
-            <a href="{{ route('booking') }}"
+            <a href="{{ route('booking') }}" wire:navigate
                class="w-full whitespace-nowrap rounded-full border border-rule px-7 py-3.5 font-medium text-ink transition-colors hover:border-accent sm:w-auto">
                 Booking Lagi
             </a>

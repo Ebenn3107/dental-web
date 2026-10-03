@@ -74,7 +74,6 @@ h1, h2, h3, .font-display {
     animation-play-state: paused;
 }
 @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
     .lift, .lift:hover { transition: none; transform: none; }
 }
 

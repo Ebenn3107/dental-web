@@ -18,11 +18,11 @@
                 </p>
                 <div class="mt-8 flex flex-wrap items-center gap-3">
                     <a href="{{ route('booking') }}"
-                       class="whitespace-nowrap rounded-full bg-accent px-7 py-3.5 font-medium text-white transition-colors hover:bg-accent-deep">
+                       wire:navigate class="whitespace-nowrap rounded-full bg-accent px-7 py-3.5 font-medium text-white transition-colors hover:bg-accent-deep">
                         Booking Sekarang
                     </a>
                     <a href="{{ route('check-status') }}"
-                       class="whitespace-nowrap rounded-full border border-on-navy/30 px-7 py-3.5 font-medium text-on-navy transition-colors hover:border-on-navy/60">
+                       wire:navigate class="whitespace-nowrap rounded-full border border-on-navy/30 px-7 py-3.5 font-medium text-on-navy transition-colors hover:border-on-navy/60">
                         Cek Status Booking
                     </a>
                 </div>
@@ -169,7 +169,7 @@
                 Siap datang tepat jadwal?
             </h2>
             <a href="{{ route('booking') }}"
-               class="whitespace-nowrap rounded-full bg-white px-7 py-3.5 font-medium text-navy transition-colors hover:bg-mist">
+               wire:navigate class="whitespace-nowrap rounded-full bg-white px-7 py-3.5 font-medium text-navy transition-colors hover:bg-mist">
                 Mulai Booking
             </a>
         </div>
