@@ -28,22 +28,22 @@
                 </div>
             </div>
 
-            {{-- Kartu contoh: menunjukkan alur produk, bukan dekorasi --}}
+            {{-- Foto klinik + kartu contoh mengambang di atasnya --}}
             <div class="lg:col-span-5">
-                <div class="ml-auto max-w-sm rounded-2xl bg-paper p-6 text-ink">
+                <img src="{{ asset(config('clinic.images.hero')) }}"
+                     alt="Dokter gigi memeriksa pasien di klinik"
+                     fetchpriority="high"
+                     class="h-72 w-full rounded-3xl object-cover sm:h-80 lg:h-[24rem]">
+                <div class="relative z-10 mx-4 -mt-14 max-w-sm rounded-2xl bg-paper p-5 text-ink shadow-lift sm:mx-6 lg:ml-auto">
                     <div class="flex items-center justify-between">
                         <p class="text-xs font-medium uppercase tracking-widest text-ink-soft">Contoh booking</p>
                         <span class="rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent-deep">Dikonfirmasi</span>
                     </div>
-                    <p class="mt-4 font-display text-xl font-bold tracking-tight">Scaling (Pembersihan Karang Gigi)</p>
-                    <dl class="mt-4 space-y-2 text-sm">
+                    <p class="mt-3 font-display text-lg font-bold tracking-tight">Scaling (Pembersihan Karang Gigi)</p>
+                    <dl class="mt-3 space-y-2 text-sm">
                         <div class="flex justify-between gap-4 border-b border-rule pb-2">
                             <dt class="text-ink-soft">Dokter</dt>
                             <dd class="font-medium">drg. Sari Wulandari</dd>
-                        </div>
-                        <div class="flex justify-between gap-4 border-b border-rule pb-2">
-                            <dt class="text-ink-soft">Jadwal</dt>
-                            <dd class="font-medium tabular">Senin, 09.00–09.45 WIB</dd>
                         </div>
                         <div class="flex justify-between gap-4">
                             <dt class="text-ink-soft">Kode</dt>
@@ -99,16 +99,23 @@
         </h2>
         <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
             @foreach ($services as $index => $layanan)
-                <article class="lift rounded-2xl border border-rule p-6 {{ $loop->first ? 'bg-accent text-white lg:col-span-4' : 'bg-paper lg:col-span-2' }}
+                @php $foto = config('clinic.images.services')[$layanan->name] ?? null; @endphp
+                <article class="lift overflow-hidden rounded-2xl border border-rule {{ $loop->first ? 'bg-accent text-white lg:col-span-4' : 'bg-paper lg:col-span-2' }}
                                {{ $index === 3 ? 'lg:col-span-2' : '' }} {{ $index === 4 ? 'lg:col-span-4' : '' }}">
-                    <p class="font-mono text-sm {{ $loop->first ? 'text-white/70' : 'text-accent' }}">0{{ $index + 1 }}</p>
-                    <h3 class="mt-6 font-display text-xl font-bold tracking-tight {{ $loop->first ? 'text-white' : 'text-ink' }}">
-                        {{ $layanan->name }}
-                    </h3>
-                    <p class="mt-2 text-sm {{ $loop->first ? 'text-white/80' : 'text-ink-soft' }}">
-                        {{ $layanan->duration_minutes }} menit ·
-                        {{ $layanan->price ? 'Rp '.number_format((float) $layanan->price, 0, ',', '.') : 'Hubungi kami' }}
-                    </p>
+                    @if ($foto)
+                        <img src="{{ asset($foto) }}" alt="Layanan {{ $layanan->name }}" loading="lazy"
+                             class="h-44 w-full object-cover {{ $loop->first ? 'sm:h-56' : '' }}">
+                    @endif
+                    <div class="p-6">
+                        <p class="font-mono text-sm {{ $loop->first ? 'text-white/70' : 'text-accent' }}">0{{ $index + 1 }}</p>
+                        <h3 class="mt-4 font-display text-xl font-bold tracking-tight {{ $loop->first ? 'text-white' : 'text-ink' }}">
+                            {{ $layanan->name }}
+                        </h3>
+                        <p class="mt-2 text-sm {{ $loop->first ? 'text-white/80' : 'text-ink-soft' }}">
+                            {{ $layanan->duration_minutes }} menit ·
+                            {{ $layanan->price ? 'Rp '.number_format((float) $layanan->price, 0, ',', '.') : 'Hubungi kami' }}
+                        </p>
+                    </div>
                 </article>
             @endforeach
         </div>
@@ -121,18 +128,24 @@
         </h2>
         <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($doctors as $dokter)
-                <article class="lift flex items-center gap-4 rounded-2xl border border-rule bg-paper p-6">
+                <article class="lift overflow-hidden rounded-2xl border border-rule bg-paper">
                     @if ($dokter->photo)
                         <img src="{{ Storage::url($dokter->photo) }}" alt="{{ $dokter->name }}"
-                             class="h-14 w-14 shrink-0 rounded-full object-cover">
+                             class="h-52 w-full object-cover">
                     @else
-                        <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent/10 font-display text-lg font-bold text-accent-deep">
-                            {{ \Illuminate\Support\Str::of($dokter->name)->replace(['drg. ', 'dr. '], '')->explode(' ')->map(fn ($w) => \Illuminate\Support\Str::charAt($w, 0))->implode('') }}
-                        </span>
+                        {{-- Placeholder potret dokter — tergantikan foto saat diupload via admin --}}
+                        <div class="flex h-52 w-full flex-col items-center justify-center gap-2 bg-mist text-rule">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                 stroke-linecap="round" class="h-16 w-16" aria-hidden="true">
+                                <circle cx="12" cy="8" r="3.5"/>
+                                <path d="M4.5 20c0-3.6 3.4-6 7.5-6s7.5 2.4 7.5 6"/>
+                            </svg>
+                            <span class="text-xs font-medium uppercase tracking-widest">Foto dokter</span>
+                        </div>
                     @endif
-                    <div>
+                    <div class="p-6">
                         <h3 class="font-display text-lg font-bold tracking-tight text-ink">{{ $dokter->name }}</h3>
-                        <p class="text-sm text-ink-soft">{{ $dokter->specialization }}</p>
+                        <p class="mt-0.5 text-sm text-ink-soft">{{ $dokter->specialization }}</p>
                     </div>
                 </article>
             @empty
@@ -147,9 +160,11 @@
         </div>
     </section>
 
-    {{-- CTA band navy --}}
-    <section class="mt-20 rounded-3xl bg-navy px-6 py-12 text-on-navy sm:px-12">
-        <div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+    {{-- CTA band navy dengan foto ruang tunggu --}}
+    <section class="relative mt-20 overflow-hidden rounded-3xl bg-navy px-6 py-12 text-on-navy sm:px-12">
+        <img src="{{ asset(config('clinic.images.cta')) }}" alt="" aria-hidden="true" loading="lazy"
+             class="absolute inset-0 h-full w-full object-cover opacity-25">
+        <div class="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
             <h2 class="max-w-md font-display text-3xl font-bold tracking-tight">
                 Siap datang tepat jadwal?
             </h2>
