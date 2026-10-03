@@ -11,7 +11,7 @@ Aplikasi web booking klinik dokter gigi: pasien booking slot online, admin menge
   - Form booking dinamis (Livewire): layanan → dokter (sesuai layanan) → tanggal → slot tersedia → data diri
   - Slot dihitung real-time: interval 15 menit, panjang sesuai durasi layanan, menghindari booking aktif, cuti dokter, dan jam yang sudah lewat
   - Halaman sukses: kode booking unik (`KLG-YYMMDD-XXXX`) + tombol **Konfirmasi via WhatsApp** (pesan terisi otomatis)
-  - Cek status booking dengan kode + no. HP (no. HP dinormalisasi, jadi `0812…` dan `62812…` sama saja)
+  - Cek status booking: kode + no. HP, atau **nomor HP saja** kalau kode lupa (nama disamarkan di hasil daftar; no. HP dinormalisasi, jadi `0812…` dan `62812…` sama saja)
 - **Admin panel** (Filament 3, di `/admin`):
   - CRUD Layanan & Dokter (jadwal praktik + cuti via relation manager di halaman dokter, pivot layanan yang dikuasai)
   - Resource Booking: filter status/tanggal/dokter, aksi ubah status (Konfirmasi → Selesai / Batalkan / Tidak Hadir) sesuai transisi yang sah

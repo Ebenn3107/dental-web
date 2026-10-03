@@ -23,7 +23,8 @@ class CheckStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => ['required', 'string', 'max:20'],
+            // Kode boleh kosong: tanpa kode, pencarian jatuh ke nomor HP saja
+            'code' => ['nullable', 'string', 'max:20'],
             'phone' => ['required', 'regex:'.Phone::VALIDATION_PATTERN],
         ];
     }

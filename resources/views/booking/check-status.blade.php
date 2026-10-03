@@ -8,16 +8,19 @@
             Di mana booking saya?
         </h1>
         <p class="mt-3 text-ink-soft">
-            Masukkan kode booking dan nomor HP yang Anda pakai saat booking.
+            Masukkan kode booking dan nomor HP Anda. Lupa kode? Biarkan kosong —
+            kami carikan dari nomor HP.
         </p>
 
         <form method="GET" action="{{ route('check-status') }}"
               class="mt-8 rounded-2xl border border-rule bg-paper p-6 sm:p-7">
             <div class="grid gap-4">
                 <div>
-                    <label for="code" class="mb-1 block text-sm font-medium text-ink">Kode Booking</label>
+                    <label for="code" class="mb-1 block text-sm font-medium text-ink">
+                        Kode Booking <span class="font-normal text-ink-soft">(opsional)</span>
+                    </label>
                     <input type="text" id="code" name="code" value="{{ old('code', request('code')) }}"
-                           placeholder="KLG-260101-AB12" required
+                           placeholder="KLG-260101-AB12"
                            class="w-full rounded-xl border-rule font-mono uppercase text-ink placeholder:text-ink-soft focus:border-accent">
                     @error('code') <p class="mt-1 text-sm text-danger">{{ $message }}</p> @enderror
                 </div>
@@ -36,16 +39,21 @@
         </form>
 
         @if (isset($searched) && $searched)
+            @php
+                $warnaStatus = [
+                    'pending' => 'bg-accent/10 text-accent-deep',
+                    'confirmed' => 'bg-accent/10 text-accent-deep',
+                    'completed' => 'bg-wa/10 text-wa',
+                    'cancelled' => 'bg-danger-soft text-danger',
+                    'no_show' => 'bg-mist text-ink-soft',
+                ];
+            @endphp
+
             @if ($booking)
                 <div class="lift mt-6 rounded-2xl border border-rule bg-paper p-6 sm:p-7">
                     <div class="flex items-center justify-between gap-4">
                         <p class="font-mono text-xl font-medium tracking-wider text-accent-deep">{{ $booking->code }}</p>
-                        <span class="rounded-full px-3 py-1 text-xs font-medium
-                            {{ $booking->status->value === 'pending' ? 'bg-accent/10 text-accent-deep' : '' }}
-                            {{ $booking->status->value === 'confirmed' ? 'bg-accent/10 text-accent-deep' : '' }}
-                            {{ $booking->status->value === 'completed' ? 'bg-wa/10 text-wa' : '' }}
-                            {{ $booking->status->value === 'cancelled' ? 'bg-danger-soft text-danger' : '' }}
-                            {{ $booking->status->value === 'no_show' ? 'bg-mist text-ink-soft' : '' }}">
+                        <span class="rounded-full px-3 py-1 text-xs font-medium {{ $warnaStatus[$booking->status->value] }}">
                             {{ $booking->status->getLabel() }}
                         </span>
                     </div>
@@ -81,11 +89,35 @@
                         Konfirmasi via WhatsApp
                     </a>
                 </div>
+            @elseif ($bookings !== null && $bookings->isNotEmpty())
+                <p class="mt-6 font-display text-lg font-bold tracking-tight text-ink">
+                    Ditemukan {{ $bookings->count() }} booking atas nomor ini:
+                </p>
+                @foreach ($bookings as $item)
+                    <article class="lift mt-3 rounded-2xl border border-rule bg-paper p-5">
+                        <div class="flex items-center justify-between gap-4">
+                            <p class="font-mono text-lg font-medium tracking-wider text-accent-deep">{{ $item->code }}</p>
+                            <span class="rounded-full px-3 py-1 text-xs font-medium {{ $warnaStatus[$item->status->value] }}">
+                                {{ $item->status->getLabel() }}
+                            </span>
+                        </div>
+                        <p class="mt-2 text-sm text-ink-soft">
+                            {{ $item->maskedName() }} · {{ $item->service->name }}
+                        </p>
+                        <p class="mt-1 text-sm text-ink tabular">
+                            {{ $item->booking_date->translatedFormat('l, d F Y') }} ·
+                            {{ \Carbon\Carbon::parse($item->start_time)->format('H.i') }} WIB
+                        </p>
+                    </article>
+                @endforeach
+                <p class="mt-3 text-sm text-ink-soft">
+                    Salin salah satu kode di atas, lalu cari bersama nomor HP untuk melihat detail lengkap.
+                </p>
             @else
                 <div class="mt-6 rounded-2xl border border-rule bg-mist p-6 text-center">
                     <p class="font-display font-bold text-ink">Booking tidak ditemukan.</p>
                     <p class="mt-1 text-sm text-ink-soft">
-                        Periksa kembali kode booking dan pastikan nomor HP sama dengan yang Anda gunakan saat booking.
+                        Periksa kembali nomor HP — pastikan sama dengan yang Anda gunakan saat booking.
                     </p>
                 </div>
             @endif

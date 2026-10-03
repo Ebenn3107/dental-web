@@ -13,7 +13,20 @@
 
         <div class="lift mt-8 rounded-2xl border border-rule bg-paper p-7 text-left">
             <p class="text-xs font-medium uppercase tracking-widest text-ink-soft">Kode Booking</p>
-            <p class="mt-1 font-mono text-3xl font-medium tracking-wider text-accent-deep">{{ $booking->code }}</p>
+            <div class="mt-1 flex items-center justify-between gap-3">
+                <p class="font-mono text-3xl font-medium tracking-wider text-accent-deep">{{ $booking->code }}</p>
+                <button type="button"
+                        x-data="{ copied: false }"
+                        @click="navigator.clipboard.writeText('{{ $booking->code }}'); copied = true; setTimeout(() => copied = false, 2000)"
+                        class="whitespace-nowrap rounded-full border border-rule px-3 py-1.5 text-xs font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent">
+                    <span x-text="copied ? 'Tersalin' : 'Salin kode'"></span>
+                </button>
+            </div>
+            <p class="mt-3 text-xs leading-relaxed text-ink-soft">
+                Tekan "Konfirmasi via WhatsApp" — kode ini otomatis tercantum di chat Anda
+                sebagai catatan, jadi tidak akan hilang. Lupa juga? Cukup cari lewat nomor HP
+                di halaman Cek Status.
+            </p>
 
             <dl class="mt-6 space-y-2 text-sm">
                 <div class="flex justify-between gap-4 border-b border-rule pb-2">

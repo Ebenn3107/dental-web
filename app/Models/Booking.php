@@ -48,6 +48,19 @@ class Booking extends Model
     }
 
     /**
+     * Nama dengan sebagian karakter disamarkan — untuk daftar hasil pencarian
+     * yang hanya memakai nomor HP (kode tidak perlu disamarkan: ia justru
+     * yang dicari pemiliknya).
+     */
+    public function maskedName(): string
+    {
+        return collect(explode(' ', $this->patient_name))
+            ->map(fn ($word) => \Illuminate\Support\Str::charAt($word, 0)
+                .str_repeat('*', max(mb_strlen($word) - 1, 1)))
+            ->implode(' ');
+    }
+
+    /**
      * Link WhatsApp untuk mengonfirmasi booking ke admin klinik.
      */
     public function waLink(): string

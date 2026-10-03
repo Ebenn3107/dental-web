@@ -22,11 +22,10 @@
             </a>
             <nav class="flex items-center gap-2 text-sm font-medium sm:gap-6">
                 <a href="{{ route('home') }}" class="hidden px-1 text-ink-soft transition-colors hover:text-ink sm:block">Beranda</a>
-                <a href="{{ route('booking') }}" class="hidden px-1 text-ink-soft transition-colors hover:text-ink sm:block">Booking</a>
                 <a href="{{ route('check-status') }}" class="hidden px-1 text-ink-soft transition-colors hover:text-ink sm:block">Cek Status</a>
                 <a href="{{ route('booking') }}"
                    class="whitespace-nowrap rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-deep">
-                    Booking Cepat
+                    Booking
                 </a>
             </nav>
         </div>

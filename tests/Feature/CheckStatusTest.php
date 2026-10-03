@@ -49,6 +49,28 @@ class CheckStatusTest extends TestCase
             ->assertSee('format Indonesia');
     }
 
+    public function test_phone_without_code_lists_bookings_with_masked_name(): void
+    {
+        // Skenario: user lupa kode — cukup nomor HP untuk menemukan kodenya lagi
+        $booking = Booking::factory()->create([
+            'patient_name' => 'Budi Pasien',
+            'patient_phone' => '6281234567890',
+        ]);
+
+        $this->get(route('check-status', ['phone' => '081234567890']))
+            ->assertOk()
+            ->assertSee($booking->code)
+            ->assertSee('B*** P*****')
+            ->assertDontSee('Budi Pasien');
+    }
+
+    public function test_phone_without_code_unknown_number_shows_not_found(): void
+    {
+        $this->get(route('check-status', ['phone' => '081999999999']))
+            ->assertOk()
+            ->assertSee('Booking tidak ditemukan');
+    }
+
     public function test_wa_link_builds_message_with_booking_details(): void
     {
         $booking = Booking::factory()->create(['patient_name' => 'Budi Pasien']);
